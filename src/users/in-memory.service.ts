@@ -1,17 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { UsersInterface } from './users.interface';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { UsersServiceInterface } from './users.service.interface';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
-export class InMemoryService implements UsersInterface {
+export class InMemoryService implements UsersServiceInterface {
+    create(createUserDto: CreateUserDto): User {
+        if (this.users.has(createUserDto.email)) {
+            throw new UnprocessableEntityException('User already exists');
+        };
+
+        const user = new User();
+        user.id = crypto.randomUUID();
+        user.email = createUserDto.email;
+        user.consents = [];
+        this.users.set(createUserDto.email, user);
+        return user;
+    }
+
+    private users: Map<string, User> = new Map<string, User>();
+
     getAll(): User[] {
-        throw new Error('Method not implemented.');
+        return Array.from(this.users.values());
     }
+
     get(email: string): User {
-        throw new Error('Method not implemented.');
+        return this.users.get(email);
     }
+
     delete(email: string): void {
-        throw new Error('Method not implemented.');
+        this.users.delete(email);
     }
-    
+
 }
