@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UnprocessableEntityException,
+} from '@nestjs/common'
+import { CreateUserDto } from './dto/create-user.dto'
+import { UsersService } from './users.service'
 
 @Controller('users')
 export class UsersController {
@@ -8,20 +16,27 @@ export class UsersController {
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    const allUsers = this.usersService.findAll()
+
+    return { users: allUsers }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get(':email')
+  findOne(@Param('email') email: string) {
+    return this.usersService.findOne(email)
   }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    const newUser = this.usersService.create(createUserDto)
+    if (!newUser) {
+      throw new UnprocessableEntityException('User already exists')
+    }
+    return newUser
   }
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+
+  @Delete(':email')
+  remove(@Param('email') email: string) {
+    return this.usersService.remove(email)
   }
 }
