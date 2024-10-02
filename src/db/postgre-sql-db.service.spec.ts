@@ -46,4 +46,45 @@ describe('PostgreSQLDbService', () => {
     const users = await service.findAllUsers();
     expect(users.length).toEqual(0);
   })
+
+  it('can post events', async () => {
+    const user = await service.createUser({ email: 'kX7ZJ@example.com' });
+    await service.postEvent({
+      user: {
+        id: user.id
+      },
+      consents: [
+        {
+          id: 'email_notifications',
+          enabled: true
+        }
+      ]
+    })
+    const userWithConsent = await service.findOneUser({ email: 'kX7ZJ@example.com' })
+    expect(userWithConsent.consents.length).toEqual(1)
+    expect(userWithConsent.consents[0].id).toEqual('email_notifications')
+    expect(userWithConsent.consents[0].enabled).toEqual(true)
+  })
+
+  it('can save event history', async () => {
+    const user = await service.createUser({ email: 'kX7ZJ@example.com' });
+    await service.saveEventHistory({
+      user: {
+        id: user.id
+      },
+      consents: [
+        {
+          id: 'email_notifications',
+          enabled: true
+        }
+      ]
+    })
+
+    const userEventsHistory = await service.getUserEventsHistory('kX7ZJ@example.com')
+    expect(userEventsHistory.events.length).toEqual(1)
+    expect(userEventsHistory.events[0].consents.length).toEqual(1)
+    expect(userEventsHistory.events[0].consents[0].id).toEqual('email_notifications')
+    expect(userEventsHistory.events[0].consents[0].enabled).toEqual(true)
+  })
+
 })
