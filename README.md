@@ -19,30 +19,37 @@ Also Docker lanches a PostgreSQL database.
 > I personnaly use `pnpm` but you can pick an other node package manager
 
 ```bash
-$ pnpm install
+pnpm install
 ```
 
 ## Running the app
 
+
+#### Development with watch mode
 ```bash
-# development with watch mode
-$ pnpm run start:dev
+pnpm run start:dev
+```
 
-# Apply Prisma migrations
-$ pnpm prisma migrate dev
+#### Apply Prisma migrations
+```bash
+pnpm prisma migrate dev
+```
 
-# Reset Prisma migrations and start fresh
-$ pnpm prisma migrate reset dev
+#### Reset Prisma migrations and start fresh
+```bash
+pnpm prisma migrate reset dev
 ```
 
 ## Test
 
+#### unit tests
 ```bash
-# unit tests
-$ pnpm run test
+pnpm run test
+```
 
-# e2e tests
-$ pnpm run test:e2e
+#### e2e tests
+```bash
+pnpm run test:e2e
 ```
 
 ### With REST Client
