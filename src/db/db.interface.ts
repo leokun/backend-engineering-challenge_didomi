@@ -10,7 +10,7 @@ export type UserSearchOptions = EmailOption | IdOption
 export type UserEventsHistory = { user: IdOption, events: { timestamp: number, consents: Consent[] }[] }
 
 
-export interface Db {
+export interface DbInterface {
   createUser(createUserDto: CreateUserDto): Promise<GetUserResponse | undefined>
   findAllUsers(): Promise<GetUserResponse[]>
   findOneUser(search: UserSearchOptions): Promise<GetUserResponse>

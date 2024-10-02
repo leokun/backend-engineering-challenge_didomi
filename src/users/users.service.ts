@@ -1,10 +1,10 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
-import { DbService } from '@/db/db.service'
+import { PostgreSQLDbService } from '@/db/postgre-sql-db.service'
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly service: DbService) { }
+  constructor(private readonly service: PostgreSQLDbService) { }
   create(createUserDto: CreateUserDto) {
     try {
       return this.service.createUser(createUserDto)

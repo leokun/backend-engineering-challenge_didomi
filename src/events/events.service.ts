@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { PostEventDto } from './dto/post-event.dto'
-import { DbService } from '@/db/db.service'
+import { PostgreSQLDbService } from '@/db/postgre-sql-db.service'
 import { Consent } from './entities/consent.entity'
 import { User } from '@/users/entities/user.entity'
 
 @Injectable()
 export class EventsService {
-  constructor(private readonly service: DbService) { }
+  constructor(private readonly service: PostgreSQLDbService) { }
 
 
   async saveHistory(postConsentDto: PostEventDto): Promise<void> {

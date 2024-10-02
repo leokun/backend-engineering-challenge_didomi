@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { DbService } from './db.service'
+import { PostgreSQLDbService } from './postgre-sql-db.service'
 import { PrismaService } from '@/prisma.service'
 
-describe('DbService', () => {
-  let service: DbService
+describe('PostgreSQLDbService', () => {
+  let service: PostgreSQLDbService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [DbService, PrismaService],
+      providers: [PostgreSQLDbService, PrismaService],
     }).compile()
 
-    service = module.get<DbService>(DbService)
+    service = module.get<PostgreSQLDbService>(PostgreSQLDbService)
   })
   afterEach(async () => {
     const prisma = new PrismaService()

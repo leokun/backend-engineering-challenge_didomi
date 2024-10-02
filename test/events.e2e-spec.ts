@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { UsersModule } from '@/users/users.module';
-import { DbService } from '@/db/db.service';
+import { PostgreSQLDbService } from '@/db/postgre-sql-db.service';
 import { InMemoryDbService } from '@/db/in-memory-db.service';
 import { User } from '@/users/entities/user.entity';
 

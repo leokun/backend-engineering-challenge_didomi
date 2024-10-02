@@ -26,7 +26,6 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto)
     const newUser = await this.usersService.create(createUserDto)
     if (!newUser) {
       throw new UnprocessableEntityException('User already exists')

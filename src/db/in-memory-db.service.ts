@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { PostEventDto } from '@/events/dto/post-event.dto'
 import { CreateUserDto } from '@/users/dto/create-user.dto'
 import { User } from '@/users/entities/user.entity'
-import type { Db, UserEventsHistory, UserSearchOptions } from './db.interface'
+import type { DbInterface, UserEventsHistory, UserSearchOptions } from './db.interface'
 import { Consent } from '@/events/entities/consent.entity'
 import { GetUserResponse } from './dto/user-response'
 import { PostEventResponse } from './dto/created-event-response'
@@ -11,7 +11,7 @@ type UserEmail = string
 type UserId = string
 type DateEventMap = Map<number, Consent[]>
 @Injectable()
-export class InMemoryDbService implements Db {
+export class InMemoryDbService implements DbInterface {
 
   private users: Map<UserEmail, User> = new Map<UserEmail, User>()
   private idEmail: Map<UserId, UserEmail> = new Map<UserId, UserEmail>()
@@ -74,7 +74,7 @@ export class InMemoryDbService implements Db {
   async getUserEventsHistory(email: string): Promise<UserEventsHistory> {
     const fromEntries = Object.fromEntries(this.userEventsHistory.get(email))
     const events = Object.entries(fromEntries).map(([key, value]) => ({ timestamp: Number(key), consents: value }))
-    
+
     return { user: { id: this.idEmail.get(email) }, events }
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common'
-import { Db, UserEventsHistory, UserSearchOptions } from './db.interface';
+import { DbInterface, UserEventsHistory, UserSearchOptions } from './db.interface';
 import { PostEventDto } from '@/events/dto/post-event.dto';
 import { CreateUserDto } from '@/users/dto/create-user.dto';
 import { User } from '@/users/entities/user.entity';
@@ -9,28 +9,28 @@ import { GetUserResponse } from './dto/user-response';
 import { PostEventResponse } from './dto/created-event-response';
 
 @Injectable()
-export class DbService implements Db {
+export class PostgreSQLDbService implements DbInterface {
 
     constructor(private readonly prisma: PrismaService) { }
 
     async createUser(createUserDto: CreateUserDto): Promise<User | undefined> {
         try {
             return await this.prisma.user.create({
-            data: {
-                email: createUserDto.email
-            },
-            select: {
-                id: true,
-                email: true,
-                consents: true
-            },
-        })
+                data: {
+                    email: createUserDto.email
+                },
+                select: {
+                    id: true,
+                    email: true,
+                    consents: true
+                },
+            })
 
         } catch (_error) {
             throw new UnprocessableEntityException('User already exists')
         }
-        
-        
+
+
     }
 
 
