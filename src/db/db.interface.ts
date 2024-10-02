@@ -1,21 +1,21 @@
 import { PostEventDto } from '@/events/dto/post-event.dto'
 import { Consent } from '@/events/entities/consent.entity'
 import { CreateUserDto } from '@/users/dto/create-user.dto'
-import { User } from '@/users/entities/user.entity'
+import { GetUserResponse } from './dto/user-response'
+import { PostEventResponse } from './dto/created-event-response'
 
 type EmailOption = { email: string }
 type IdOption = { id: string }
 export type UserSearchOptions = EmailOption | IdOption
-export type UserEventsHistory = { timestamp: number, consents: Consent[] }[]
+export type UserEventsHistory = { user: IdOption, events: { timestamp: number, consents: Consent[] }[] }
 
 
 export interface Db {
-  createUser(createUserDto: CreateUserDto): User | undefined
-  findAllUsers(): User[]
-  findOneUser(search: UserSearchOptions): User
-  removeUser(email: string): void
-  postEvent(postConsentDto: PostEventDto): void
-  saveEventHistory(postConsentDto: PostEventDto): void
-  getUserEventsHistory(email: string): UserEventsHistory
-
+  createUser(createUserDto: CreateUserDto): Promise<GetUserResponse | undefined>
+  findAllUsers(): Promise<GetUserResponse[]>
+  findOneUser(search: UserSearchOptions): Promise<GetUserResponse>
+  removeUser(email: string): Promise<void>
+  postEvent(postConsentDto: PostEventDto): Promise<PostEventResponse>
+  saveEventHistory(postConsentDto: PostEventDto): Promise<void>
+  getUserEventsHistory(email: string): Promise<UserEventsHistory>
 }

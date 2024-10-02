@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnprocessableEntityException } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { DbService } from '@/db/db.service'
 
@@ -6,7 +6,12 @@ import { DbService } from '@/db/db.service'
 export class UsersService {
   constructor(private readonly service: DbService) { }
   create(createUserDto: CreateUserDto) {
-    return this.service.createUser(createUserDto)
+    try {
+      return this.service.createUser(createUserDto)
+
+    } catch (_error) {
+      throw new UnprocessableEntityException('User already exists')
+    }
   }
   findAll() {
     return this.service.findAllUsers()

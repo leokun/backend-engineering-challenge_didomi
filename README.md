@@ -1,32 +1,22 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Backend engineering challenge for a job interview with [Didomi](https://www.didomi.io/fr).
+> See details [here](./Challenge.md)
+
+This is a **NestJS** application, I am also using **Prisma** as ORM/ModelBuilder.
+
+## Requirements
+
+- **docker** and **docker compose**
+- nodejs version >= 15 (use of crypto.randomUUID)
+
+For testing purpose I use **VSCode** with [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) plugin. (See `./test-api.rest` file).   
+Also Docker lanches a PostgreSQL database.
 
 ## Installation
+> I personnaly use `pnpm` but you can pick an other node package manager
 
 ```bash
 $ pnpm install
@@ -35,14 +25,14 @@ $ pnpm install
 ## Running the app
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
+# development with watch mode
 $ pnpm run start:dev
 
-# production mode
-$ pnpm run start:prod
+# Apply Prisma migrations
+$ pnpm prisma migrate dev
+
+# Reset Prisma migrations and start fresh
+$ pnpm prisma migrate reset dev
 ```
 
 ## Test
@@ -53,21 +43,13 @@ $ pnpm run test
 
 # e2e tests
 $ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
 ```
 
-## Support
+### With REST Client
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+In VSCode you can open the `./test-api.rest` file and then run api call by clicking on the ***Send Request*** link over the REST command
 
-## Stay in touch
+> ***Warning !***   
+> e2e tests and REST Client tests are using the PostgreSQL database.   
+> When unit testing are using an InMemory database (except for `src/db/db.service.spec.ts`) which don't need to be erased if something went wrong during tests.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

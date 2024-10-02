@@ -4,6 +4,8 @@ import { CreateUserDto } from '@/users/dto/create-user.dto'
 import { User } from '@/users/entities/user.entity'
 import type { Db, UserEventsHistory, UserSearchOptions } from './db.interface'
 import { Consent } from '@/events/entities/consent.entity'
+import { GetUserResponse } from './dto/user-response'
+import { PostEventResponse } from './dto/created-event-response'
 
 type UserEmail = string
 type UserId = string
@@ -15,7 +17,7 @@ export class InMemoryDbService implements Db {
   private idEmail: Map<UserId, UserEmail> = new Map<UserId, UserEmail>()
   private userEventsHistory: Map<UserEmail, DateEventMap> = new Map<UserEmail, DateEventMap>()
 
-  createUser(createUserDto: CreateUserDto): User | undefined {
+  async createUser(createUserDto: CreateUserDto): Promise<GetUserResponse | undefined> {
     if (this.users.has(createUserDto.email)) {
       throw new Error('User already exists')
     }
@@ -29,11 +31,11 @@ export class InMemoryDbService implements Db {
     return user
   }
 
-  findAllUsers(): User[] {
+  async findAllUsers(): Promise<GetUserResponse[]> {
     return Array.from(this.users.values())
   }
 
-  findOneUser(search: UserSearchOptions): User {
+  async findOneUser(search: UserSearchOptions): Promise<GetUserResponse> {
     if ('email' in search) {
       return this.users.get(search.email)
     }
@@ -43,17 +45,22 @@ export class InMemoryDbService implements Db {
     throw new Error('Invalid search options')
   }
 
-  removeUser(email: string): void {
+  async removeUser(email: string): Promise<void> {
     this.users.delete(email)
   }
 
-  postEvent(postConsentDto: PostEventDto) {
-    const user = this.findOneUser({ id: postConsentDto.user.id })
+  async postEvent(postConsentDto: PostEventDto): Promise<PostEventResponse> {
+    const user = this.findOneUser({ id: postConsentDto.user.id }) as unknown as User
     if (!user) throw new Error('User not found')
     user.consents = postConsentDto.consents
+
+    return {
+      user: { id: user.id },
+      consents: user.consents
+    }
   }
 
-  saveEventHistory(postConsentDto: PostEventDto) {
+  async saveEventHistory(postConsentDto: PostEventDto) {
     const userEmail = this.idEmail.get(postConsentDto.user.id)
     if (!userEmail) throw new Error('User not found')
 
@@ -62,13 +69,12 @@ export class InMemoryDbService implements Db {
       this.userEventsHistory.set(userEmail, new Map([[Date.now(), [...postConsentDto.consents]]]))
     }
     else this.userEventsHistory.get(userEmail).set(Date.now(), [...postConsentDto.consents])
-
-
   }
 
-  getUserEventsHistory(email: string): UserEventsHistory {
+  async getUserEventsHistory(email: string): Promise<UserEventsHistory> {
     const fromEntries = Object.fromEntries(this.userEventsHistory.get(email))
-    //return Array(Object.fromEntries(this.userEventsHistory.get(email)))
-    return Object.entries(fromEntries).map(([key, value]) => ({ timestamp: Number(key), consents: value }))
+    const events = Object.entries(fromEntries).map(([key, value]) => ({ timestamp: Number(key), consents: value }))
+    
+    return { user: { id: this.idEmail.get(email) }, events }
   }
 }

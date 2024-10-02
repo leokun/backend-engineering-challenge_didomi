@@ -9,15 +9,15 @@ export class EventsService {
   constructor(private readonly service: DbService) { }
 
 
-  saveHistory(postConsentDto: PostEventDto): void {
-    this.service.saveEventHistory(postConsentDto)
+  async saveHistory(postConsentDto: PostEventDto): Promise<void> {
+    await this.service.saveEventHistory(postConsentDto)
   }
 
-  post(postConsentDto: PostEventDto): void {
-    const user = this.service.findOneUser({ id: postConsentDto.user.id })
+  async post(postConsentDto: PostEventDto): Promise<void> {
+    const user = await this.service.findOneUser({ id: postConsentDto.user.id })
     if (!user) { throw new Error('User not found') }
 
-    this.service.postEvent({ ...postConsentDto, consents: this.setConsent(user, postConsentDto.consents) })
+    await this.service.postEvent({ ...postConsentDto, consents: this.setConsent(user, postConsentDto.consents) })
   }
 
   private setConsent(user: User, consents: Consent[]): Consent[] {

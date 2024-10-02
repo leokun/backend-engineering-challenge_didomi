@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id          String  @id @default(uuid())
+  email       String  @unique
+  deleted     Boolean @default(false)
+  consents    Consent[]
+  events      EventHistory[]
+  @@index([email])
+}
+
+enum ConsentId {
+  email_notifications
+  sms_notifications
+}
+
+model Consent {
+  id   ConsentId   
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  enabled     Boolean
+  unusedId          String   @id @default(uuid())
+}
+
+model EventHistory {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  consents    Json 
+  createdAt   DateTime @default(now())
+  @@index([userId])
+}

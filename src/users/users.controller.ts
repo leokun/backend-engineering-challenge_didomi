@@ -15,20 +15,19 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Get()
-  findAll() {
-    const allUsers = this.usersService.findAll()
-
-    return { users: allUsers }
+  async findAll() {
+    return await this.usersService.findAll()
   }
 
   @Get(':email')
-  findOne(@Param('email') email: string) {
-    return this.usersService.findOne(email)
+  async findOne(@Param('email') email: string) {
+    return await this.usersService.findOne(email)
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    const newUser = this.usersService.create(createUserDto)
+  async create(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto)
+    const newUser = await this.usersService.create(createUserDto)
     if (!newUser) {
       throw new UnprocessableEntityException('User already exists')
     }
@@ -36,7 +35,7 @@ export class UsersController {
   }
 
   @Delete(':email')
-  remove(@Param('email') email: string) {
-    return this.usersService.remove(email)
+  async remove(@Param('email') email: string) {
+    return await this.usersService.remove(email)
   }
 }
